@@ -69,7 +69,7 @@ public class PlayScreen implements Screen {
     MoveToAction action;
 
     //Board variables
-    private Board board;
+    public Board board;
 
     public PlayScreen(Axivals game) {
         this.game = game;
@@ -99,8 +99,8 @@ public class PlayScreen implements Screen {
         mapPixelWidth = mapWidth * tilePixelWidth;
         mapPixelHeight = mapHeight * tilePixelHeight;
 
-        //Check tiled map
-//        System.out.println(mapHeight + mapWidth);
+        //create board
+        board = new Board(this);
 
         //create coordinate
         screenCoordinates = new Vector3();
@@ -111,14 +111,10 @@ public class PlayScreen implements Screen {
         font.setColor(255, 255, 255, 1);
 
         //create hero and set spritesheet
-        player = new Hero(this);
+        player = new Hero(this, 0, 0);
         player.setAtlas("hero-imgs/spritesheets/myspritesheet.atlas");
         player.setImg("hero-imgs/spritesheets/myspritesheet.png");
-        player.setCoordinates(tilePixelWidth - 12 , Math.abs(2*tilePixelHeight-mapPixelHeight)+7); // x+w , y+0.75h
-
-        //create board
-        board = new Board();
-
+        player.setCoordinates(board.map[0][0].corX , board.map[0][0].corY); // x+w , y+0.75h
 
         //initially set our gamcam to be centered correctly at the start of map
         gamecam.position.set(mapPixelWidth / 2 + 12 , mapPixelHeight / 2 - 77, 0);
@@ -143,10 +139,10 @@ public class PlayScreen implements Screen {
         //Test hero controlling
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getWalking() == 0) {
             if (player.facing.compareTo(Hero.State.LEFT) == 0) {
-                player.setDes(player.getCoordinates().x + tilePixelWidth + 10, player.getCoordinates().y);
+                player.setDes(board.map[player.col][player.row+1].corX + 10, board.map[player.col][player.row].corX);
             }
             else {
-                player.setDes(player.getCoordinates().x + tilePixelWidth, player.getCoordinates().y);
+                player.setDes(board.map[player.col][player.row+1].corX, board.map[player.col][player.row].corY);
             }
 
             player.setCurrentState(Hero.State.WALKING);
@@ -165,10 +161,10 @@ public class PlayScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getWalking() == 0) {
             if (player.facing.compareTo(Hero.State.LEFT) == 0) {
-                player.setDes(player.getCoordinates().x - tilePixelWidth, player.getCoordinates().y);
+                player.setDes(board.map[player.col][Math.max(0, player.row-1)].corX + 10, player.getCoordinates().y);
             }
             else {
-                player.setDes(player.getCoordinates().x - tilePixelWidth - 10, player.getCoordinates().y);
+                player.setDes(board.map[player.col][Math.max(0, player.row-1)].corX - 10, player.getCoordinates().y);
             }
             player.setCurrentState(Hero.State.WALKING);
             player.setWalking(2);
@@ -181,6 +177,7 @@ public class PlayScreen implements Screen {
 
             }
             else {
+                player.
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
             }
@@ -191,23 +188,36 @@ public class PlayScreen implements Screen {
         //Down-Right combination move
         //Down-Left combination move
 
-
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.setCurrentState(Hero.State.WALKING);
-            player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y += 95 * dt);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            player.setCurrentState(Hero.State.WALKING);
-            player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y -= 95 * dt);
-        }
-
+//        int check=0;
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+//            player.setCurrentState(Hero.State.WALKING);
+//            player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y += 95 * dt);
+//            check = 1;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+//            player.setCurrentState(Hero.State.WALKING);
+//            player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y -= 95 * dt);
+//            check = 1;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+//            player.setCurrentState(Hero.State.WALKING);
+//            player.setCoordinates(player.getCoordinates().x -= 48 * Math.sqrt(3) * dt, player.getCoordinates().y);
+//            check = 1;
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+//            player.setCurrentState(Hero.State.WALKING);
+//            player.setCoordinates(player.getCoordinates().x += 48 * Math.sqrt(3) * dt, player.getCoordinates().y);
+//            check = 1;
+//        }
+//        if (check==0) {
+//            player.setCurrentState(Hero.State.STANDING);
+//        }
 //        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
 //            player.setCurrentState(Hero.State.ATTACKING1);
 //        }
 //        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
 //            player.setCurrentState(Hero.State.ATTACKING2);
 //        }
-
 
         if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
             player.setCurrentState(Hero.State.STANDING);

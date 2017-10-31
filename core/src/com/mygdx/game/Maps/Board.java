@@ -1,10 +1,10 @@
 package com.mygdx.game.Maps;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.Screens.PlayScreen;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,16 +30,22 @@ public class Board {
     private LinkedList<Vector2> list;
     private List<Vector2> path, area;
     private  List<Vector3> ranges;
-    private MoveAea areaChecker;
+    private MoveArea areaChecker;
     private Node n;
 
-    public Board() {
+    public Board(PlayScreen screen) {
+        int corX=-12,corY=631;
         map = new Node[13][24];
         for (int y=0; y < 13; y++) {
+            corY -= 52;
+            if (y%2 == 0) { corX = -12;}
+            else {corX = -40;}
             for (int x=0; x < 24; x++) {
-                map[y][x] = new Node(x, y, detail[y][x]);
+                corX += 51;
+                map[y][x] = new Node(x, y, corX, corY, detail[y][x]);
             }
         }
+        System.out.println(map[0][0].corX + " , " + map[0][0].corY);
     }
 
     public List<Vector2> getPath(int scrX, int scrY, int desX, int desY, int walk) {

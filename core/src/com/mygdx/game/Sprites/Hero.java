@@ -22,18 +22,20 @@ public class Hero extends TextureAtlas {
     private TextureAtlas atlas;
     private Animation<TextureRegion> animation;
     private Vector2 coordinates, des;
-    private float coX;
-    private float coY;
+    public int col;
+    public int row;
     private float frameDuration;
     private float elapsedTime = 1f;
-    private static int walking=1;
+    private static int walking=0;
 
-    public Hero(PlayScreen screen) {
+    public Hero(PlayScreen screen, int col, int row) {
+        this.col = col;
+        this.row = row;
+        des = new Vector2(screen.board.map[row][col].corX, screen.board.map[row][col].corY);
         coordinates = new Vector2();
         facing = State.RIGHT;
         currentState = State.STANDING;
         previousState = State.STANDING;
-        des = new Vector2(0, 0);
     }
 
     public void update(float dt) {
@@ -54,10 +56,11 @@ public class Hero extends TextureAtlas {
 
     public void setCoordinates(float x, float y) {
         this.coordinates = coordinates.set(x, y);
-        this.coX = x;
-        this.coY = y;
     }
-
+    public void setRowCol(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
     public void setDes(float x, float y) {
         this.des.set(x, y);
     }
@@ -73,16 +76,6 @@ public class Hero extends TextureAtlas {
 
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
-    }
-
-    public void setX(float x) {
-        this.coX = x;
-        this.coordinates = coordinates.set(x, coordinates.y);
-    }
-
-    public void setY(float y) {
-        this.coY = y;
-        this.coordinates = coordinates.set( coordinates.x, y);
     }
 
     public Animation<TextureRegion> action() {
