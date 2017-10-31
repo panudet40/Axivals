@@ -20,11 +20,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Axivals;
+import com.mygdx.game.Maps.Board;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Hero;
 import com.sun.corba.se.spi.orbutil.fsm.State;
@@ -44,25 +47,29 @@ public class PlayScreen implements Screen {
     private TiledMap hexes;
     private HexagonalTiledMapRenderer renderer;
 
-//    //Box2d variables
-//    private World world;
-//    private Box2DDebugRenderer b2dr;
+    // Width and Height from Map Properties variables
+    MapProperties prop;
+    public int mapWidth;
+    public int mapHeight;
+    public int tilePixelWidth;
+    public int tilePixelHeight;
+    public int mapPixelWidth;
+    public int mapPixelHeight;
 
     //font variable
     private BitmapFont font;
 
     //Coordinates variables
     private Vector3 screenCoordinates;
+    private Vector2 des;
 
     //Hero variables
     private Hero player;
 
-    //Animations variables
-//    private Texture img;
-//    private TextureAtlas textureAtlas;
-//    //    private TextureRegion[] animationFrame;
-//    private Animation<TextureRegion> animation;
-//    private float elapsedTime = 0f;
+    MoveToAction action;
+
+    //Board variables
+    private Board board;
 
     public PlayScreen(Axivals game) {
         this.game = game;
@@ -83,32 +90,38 @@ public class PlayScreen implements Screen {
         hexes = mapLoader.load("tiled-maps/map.tmx");
         renderer = new HexagonalTiledMapRenderer(hexes);
 
+        // Get Width and Height from Map Properties
+        prop = hexes.getProperties();
+        mapWidth = prop.get("width", Integer.class);
+        mapHeight = prop.get("height", Integer.class);
+        tilePixelWidth = prop.get("tilewidth", Integer.class);
+        tilePixelHeight = prop.get("tileheight", Integer.class);
+        mapPixelWidth = mapWidth * tilePixelWidth;
+        mapPixelHeight = mapHeight * tilePixelHeight;
+
+        //Check tiled map
+//        System.out.println(mapHeight + mapWidth);
+
         //create coordinate
         screenCoordinates = new Vector3();
+        des = new Vector2(0, 0);
 
         //create and set font
         font = new BitmapFont();
         font.setColor(255, 255, 255, 1);
 
-        // Get Width and Height from Map Properties
-        MapProperties prop = hexes.getProperties();
-
-        int mapWidth = prop.get("width", Integer.class);
-        int mapHeight = prop.get("height", Integer.class);
-        int tilePixelWidth = prop.get("tilewidth", Integer.class);
-        int tilePixelHeight = prop.get("tileheight", Integer.class);
-
-        int mapPixelWidth = mapWidth * tilePixelWidth;
-        int mapPixelHeight = mapHeight * tilePixelHeight;
-
         //create hero and set spritesheet
         player = new Hero(this);
         player.setAtlas("hero-imgs/spritesheets/myspritesheet.atlas");
         player.setImg("hero-imgs/spritesheets/myspritesheet.png");
-        player.setCoordinates(tilePixelWidth - 12, Math.abs(2*tilePixelHeight-mapPixelHeight) + 5);
+        player.setCoordinates(tilePixelWidth - 12 , Math.abs(2*tilePixelHeight-mapPixelHeight)+7); // x+w , y+0.75h
+
+        //create board
+        board = new Board();
+
 
         //initially set our gamcam to be centered correctly at the start of map
-        gamecam.position.set(mapPixelWidth / 2 + 12, mapPixelHeight / 2 - 77, 0);
+        gamecam.position.set(mapPixelWidth / 2 + 12 , mapPixelHeight / 2 - 77, 0);
     }
 
     @Override
@@ -128,38 +141,75 @@ public class PlayScreen implements Screen {
 //            gamecam.position.y -= 100 * dt;
 
         //Test hero controlling
-        int check = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.setFacing(Hero.State.RIGHT);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getWalking() == 0) {
+            if (player.facing.compareTo(Hero.State.LEFT) == 0) {
+                player.setDes(player.getCoordinates().x + tilePixelWidth + 10, player.getCoordinates().y);
+            }
+            else {
+                player.setDes(player.getCoordinates().x + tilePixelWidth, player.getCoordinates().y);
+            }
+
             player.setCurrentState(Hero.State.WALKING);
-            player.setCoordinates(player.getCoordinates().x += 75 * dt, player.getCoordinates().y);
-            check = 1;
+            player.setWalking(1);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.setFacing(Hero.State.LEFT);
+        else if (player.getWalking() == 1) {
+            if (player.getCoordinates().x < player.getDes().x) {
+                player.setFacing(Hero.State.RIGHT);
+                player.setCurrentState(Hero.State.WALKING);
+                player.setCoordinates(player.getCoordinates().x += 48 * Math.sqrt(3) * dt, player.getCoordinates().y);
+            }
+            else {
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getWalking() == 0) {
+            if (player.facing.compareTo(Hero.State.LEFT) == 0) {
+                player.setDes(player.getCoordinates().x - tilePixelWidth, player.getCoordinates().y);
+            }
+            else {
+                player.setDes(player.getCoordinates().x - tilePixelWidth - 10, player.getCoordinates().y);
+            }
             player.setCurrentState(Hero.State.WALKING);
-            player.setCoordinates(player.getCoordinates().x -= 75 * dt, player.getCoordinates().y);
-            check = 1;
+            player.setWalking(2);
         }
+        else if (player.getWalking() == 2) {
+            if (player.getCoordinates().x > player.getDes().x) {
+                player.setFacing(Hero.State.LEFT);
+                player.setCurrentState(Hero.State.WALKING);
+                player.setCoordinates(player.getCoordinates().x -= 48 * Math.sqrt(3) * dt, player.getCoordinates().y);
+
+            }
+            else {
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+
+        //Up-Right combination move
+        //Up-Left combination move
+        //Down-Right combination move
+        //Down-Left combination move
+
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.setCurrentState(Hero.State.WALKING);
             player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y += 95 * dt);
-            check = 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.setCurrentState(Hero.State.WALKING);
             player.setCoordinates(player.getCoordinates().x, player.getCoordinates().y -= 95 * dt);
-            check = 1;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            player.setCurrentState(Hero.State.ATTACKING1);
-            check = 1;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
-            player.setCurrentState(Hero.State.ATTACKING2);
-            check = 1;
-        }
-        if (check == 0) {
+
+//        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+//            player.setCurrentState(Hero.State.ATTACKING1);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
+//            player.setCurrentState(Hero.State.ATTACKING2);
+//        }
+
+
+        if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
             player.setCurrentState(Hero.State.STANDING);
         }
     }
@@ -199,6 +249,18 @@ public class PlayScreen implements Screen {
         font.draw(game.batch, "Screen Coordinates", 155, 660);
         font.draw(game.batch, (int) screenCoordinates.x + " , " + (int) screenCoordinates.y, 190, 635);
 
+        //render hero coordinates
+        font.draw(game.batch, "Hero Coordinates", 400, 660);
+        font.draw(game.batch, (int) player.getCoordinates().x + " , " + (int) player.getCoordinates().y, 435, 635);
+
+        //render destination coordinates
+        font.draw(game.batch, "Destination Coordinates", 600, 660);
+        font.draw(game.batch, (int) player.getDes().x + " , " + (int) player.getDes().y, 635, 635);
+
+        //render walk coordinates
+        font.draw(game.batch, "Status", 800, 660);
+        font.draw(game.batch, Integer.toString(player.getWalking()), 800, 635);
+
         //animation
 //        game.batch.draw(player.action().getKeyFrame(player.getElapsedTime(), true),
 //                player.getCoordinates().x, player.getCoordinates().y);
@@ -226,6 +288,7 @@ public class PlayScreen implements Screen {
             game.batch.draw(player.action().getKeyFrame(player.getElapsedTime(), true),
                     player.getCoordinates().x, player.getCoordinates().y);
         }
+
         game.batch.end();
     }
 

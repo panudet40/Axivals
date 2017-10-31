@@ -19,19 +19,21 @@ public class Hero extends TextureAtlas {
     public State currentState;
     public State previousState;
     private Texture img;
+    private TextureAtlas atlas;
     private Animation<TextureRegion> animation;
-    private Vector2 coordinates;
+    private Vector2 coordinates, des;
     private float coX;
     private float coY;
-    private TextureAtlas atlas;
     private float frameDuration;
     private float elapsedTime = 1f;
+    private static int walking=1;
 
     public Hero(PlayScreen screen) {
         coordinates = new Vector2();
         facing = State.RIGHT;
         currentState = State.STANDING;
         previousState = State.STANDING;
+        des = new Vector2(0, 0);
     }
 
     public void update(float dt) {
@@ -46,15 +48,24 @@ public class Hero extends TextureAtlas {
         this.img = new Texture(path);
     }
 
+    public void setWalking(int n) { this.walking = n; }
+
+    public int getWalking() { return walking; }
+
     public void setCoordinates(float x, float y) {
         this.coordinates = coordinates.set(x, y);
         this.coX = x;
         this.coY = y;
     }
 
+    public void setDes(float x, float y) {
+        this.des.set(x, y);
+    }
+
     public Vector2 getCoordinates() {
         return this.coordinates;
     }
+    public Vector2 getDes() { return  this.des; }
 
     public void setAtlas(String path) {
         this.atlas = new TextureAtlas(path);

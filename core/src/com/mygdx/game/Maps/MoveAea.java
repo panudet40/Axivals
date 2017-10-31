@@ -2,17 +2,18 @@ package com.mygdx.game.Maps;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import java.util.List;
 
 public class MoveAea {
-    private Vector2[] area, ways;
-    private Vector3[] ranges;
+    private List<Vector2> area, ways;
+    private List<Vector3> ranges;
     private Board board;
 
     public MoveAea(Board board) {
 
     }
 
-    public Vector2[] getArea(int x, int y, int n, Board board) {
+    public List<Vector2> getArea(int x, int y, int n, Board board) {
         int idx = 0;
         int idx_r = 0;
         int start;
@@ -26,10 +27,10 @@ public class MoveAea {
                 start = (x - n + (int)Math.ceil(Math.abs(y-i)/2));
                 stop = start + 2*n-Math.abs(y-i)+1;
             }
-            ranges[idx_r].set(start, i, stop);
+            ranges.add(idx_r, new Vector3(start, i, stop));
             for (int j = start; j < stop; j++) {
                     if (!board.map[i][j].isObstacle() == true && i >= 0 && j >= 0) {
-                        area[idx].set(i, j);
+                        area.add(idx, new Vector2(i, j));
                         idx++;
                     }
             }
@@ -37,27 +38,33 @@ public class MoveAea {
         return area;
     }
 
-    public Vector2[] getWays(int x, int y) {
+    public List<Vector2> getWays(int x, int y, Board board) {
         if (y%2 == 0) {
-            ways[0] = new Vector2(x+1, y);
-            ways[1] = new Vector2(x+1, y+1);
-            ways[2] = new Vector2(x, y+1);
-            ways[3] = new Vector2(x-1, y);
-            ways[4] = new Vector2(x, y-1);
-            ways[5] = new Vector2(x+1, y-1);
+            ways.add(new Vector2(x+1, y));
+            ways.add(new Vector2(x+1, y+1));
+            ways.add(new Vector2(x, y+1));
+            ways.add(new Vector2(x-1, y));
+            ways.add(new Vector2(x, y-1));
+            ways.add(new Vector2(x+1, y-1));
         }
         else {
-            ways[0] = new Vector2(x+1, y);
-            ways[1] = new Vector2(x, y+1);
-            ways[2] = new Vector2(x-1, y+1);
-            ways[3] = new Vector2(x-1, y);
-            ways[4] = new Vector2(x-1, y-1);
-            ways[5] = new Vector2(x, y-1);
+            ways.add(new Vector2(x+1, y));
+            ways.add(new Vector2(x, y+1));
+            ways.add(new Vector2(x-1, y+1));
+            ways.add(new Vector2(x-1, y));
+            ways.add(new Vector2(x-1, y-1));
+            ways.add(new Vector2(x, y-1));
+        }
+        area = this.getArea(x, y, 1, board);
+        ways.retainAll(area);
+        for (Vector2 node: ways) {
+            board.map[(int)node.y][(int)node.x].setVisit(1);
+            board.map[(int)node.y][(int)node.x].setParent(x, y);
         }
         return  ways;
     }
 
-    public Vector3[] getRanges() {
+    public List<Vector3> getRanges() {
         return ranges;
     }
 }
