@@ -28,7 +28,7 @@ public class Hero extends TextureAtlas {
     private float elapsedTime = 1f;
     private static int walking=0;
 
-    public Hero(PlayScreen screen, int col, int row) {
+    public Hero(PlayScreen screen, int row, int col) {
         this.col = col;
         this.row = row;
         des = new Vector2(screen.board.map[row][col].corX, screen.board.map[row][col].corY);

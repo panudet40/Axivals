@@ -3,17 +3,17 @@ package com.mygdx.game.Maps;
 import com.badlogic.gdx.math.Vector2;
 
 public class Node extends Vector2 {
-    public int x;
-    public int y;
+    public int row;
+    public int col;
     public int corX;
     public int corY;
     public int parentX;
     public int parentY;
     private int visit=0;
     private int obstacle;
-    public Node(int x, int y, int corX, int corY, int obstacle) {
-        this.x = x;
-        this.y = y;
+    public Node(int row, int col, int corX, int corY, int obstacle) {
+        this.row = row;
+        this.col = col;
         this.corX = corX;
         this.corY = corY;
         this.obstacle = obstacle;
