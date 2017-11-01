@@ -312,14 +312,14 @@ public class PlayScreen implements Screen {
 //            }
 
 
-//        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
-//            System.out.println("into find way test");
-//            path = new LinkedList<Vector2>();
-//            path.addAll(board.getPath(5, 4, 9,4, 4));
-//            for (Vector2 v: path) {
-//                System.out.println(v.x + " , " + v.y);
-//            }
-//        }
+        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
+            System.out.println("into find way test");
+            path = new LinkedList<Vector2>();
+            path.addAll(board.getPath(5, 4, 9,4, 4));
+            for (Vector2 v: path) {
+                System.out.println(v.x + " , " + v.y);
+            }
+        }
 
 ////        No input go to STANDING state
 //        if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
