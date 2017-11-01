@@ -28,16 +28,16 @@ public class Board {
 
     public Node[][] map;
     private LinkedList<Vector2> list;
-    private List<Vector2> path, area;
+    private List<Vector2> area, path;
     private  List<Vector3> ranges;
-    private MoveArea areaChecker;
+    private checkArea checker;
     private Node n;
 
     public Board(PlayScreen screen) {
-        int corX=-12,corY=631;
+        int corX=-12,corY=619;
         map = new Node[13][24];
         for (int y=0; y < 13; y++) {
-            corY -= 52;
+            corY -= 40;
             if (y%2 == 0) { corX = -12;}
             else {corX = -40;}
             for (int x=0; x < 24; x++) {
@@ -45,17 +45,22 @@ public class Board {
                 map[y][x] = new Node(x, y, corX, corY, detail[y][x]);
             }
         }
-        System.out.println(map[0][0].corX + " , " + map[0][0].corY);
     }
 
     public List<Vector2> getPath(int scrX, int scrY, int desX, int desY, int walk) {
         Vector2 temp;
-        area = areaChecker.getArea(scrX, scrY, walk, this);
-        ranges = areaChecker.getRanges();
+        checker = new checkArea(this);
+        area = new LinkedList<Vector2>();
+        path = new LinkedList<Vector2>();
+        System.out.println("Before checker");
+        area.addAll(checker.getArea(scrX, scrY, walk, this));
+        System.out.println("After checker");
+        ranges = checker.getRanges();
             list.add(new Vector2(scrX, scrY));
         do {
             temp = list.pop();
-            list.addAll(areaChecker.getWays((int)temp.x, (int)temp.y, this));
+            list.addAll(checker.getWays((int)temp.x, (int)temp.y, this));
+            System.out.println("Kuyyyyyy can get list");
         }while (!temp.equals(new Vector2(desX, desY)));
         return path;
     }

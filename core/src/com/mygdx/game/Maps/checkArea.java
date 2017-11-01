@@ -2,15 +2,17 @@ package com.mygdx.game.Maps;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
+import java.util.LinkedList;
 import java.util.List;
 
-public class MoveArea {
+public class checkArea {
     private List<Vector2> area, ways;
     private List<Vector3> ranges;
     private Board board;
 
-    public MoveArea(Board board) {
-
+    public checkArea(Board board) {
+    this.board = board;
     }
 
     public List<Vector2> getArea(int x, int y, int n, Board board) {
@@ -18,6 +20,9 @@ public class MoveArea {
         int idx_r = 0;
         int start;
         int stop;
+        System.out.println("Before create area");
+        area = new LinkedList<Vector2>();
+        System.out.println("Built area in checker");
         for (int i = y-n; i < y-n+2*n+1; i++) {
             if (y%2==1) {
                 start = (x - n + (int)Math.floor(Math.abs(y-i)/2));
