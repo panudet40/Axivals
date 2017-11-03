@@ -61,7 +61,10 @@ public class PlayScreen implements Screen {
     //Board variables
     public Board board;
 
+    //Path for walking
     private List<Vector2> path;
+
+    private int ipctrl=0;
 
     public PlayScreen(Axivals game) {
 
@@ -311,17 +314,18 @@ public class PlayScreen implements Screen {
 //                player.setCurrentState(Hero.State.STANDING);
 //            }
 
-
-        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
-            System.out.println("into find way test");
+        if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
+            ipctrl = 1;
             path = new LinkedList<Vector2>();
-            path.addAll(board.getPath(5, 4, 9,4, 4));
+            path.addAll(board.getPath(3,3,6,3,3));
+//            path.addAll(board.getPath(3, 3, 6,4, 3));
+            System.out.println("GET PATH!! Path size = " + path.size());
             for (Vector2 v: path) {
-                System.out.println(v.x + " , " + v.y);
+                System.out.println((int) v.x + "," + (int) v.y);
             }
-        }
-
-////        No input go to STANDING state
+            ipctrl = 0;
+          }
+        // No input go to STANDING state
 //        if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
 //            player.setCurrentState(Hero.State.STANDING);
 //        }

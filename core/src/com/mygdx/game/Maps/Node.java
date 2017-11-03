@@ -9,8 +9,8 @@ public class Node extends Vector2 {
     public int corY;
     public int parentX;
     public int parentY;
-    private int visit=0;
     private int obstacle;
+    private boolean visit=false;
     public Node(int row, int col, int corX, int corY, int obstacle) {
         this.row = row;
         this.col = col;
@@ -24,22 +24,24 @@ public class Node extends Vector2 {
         this.parentY = parentY;
     }
 
+    public Vector2 getParent() {
+        return new Vector2(this.parentX, this.parentY);
+    }
+
     public void setObstacle(int obstacle) {
         this.obstacle = obstacle;
     }
 
     public boolean isObstacle() {
-        if (obstacle == 1) {
+        if (obstacle == 1 || obstacle == 2) {
             return true;
         }
         return false;
     }
 
-    public void setVisit(int visit) {
+    public void setVisit(boolean visit) {
         this.visit = visit;
     }
 
-    public int getVisit() {
-        return visit;
-    }
+    public boolean isVisit() { return visit; }
 }
