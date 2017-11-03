@@ -42,7 +42,6 @@ public class Board {
     }
 
     public List<Vector2> getPath(int scrX, int scrY, int desX, int desY, int walk) {
-        System.out.println("INTO GET PATH!!!!!!!!!");
         Vector2 temp1;
         area = new LinkedList<Vector2>();
         path = new LinkedList<Vector2>();
@@ -53,17 +52,13 @@ public class Board {
         while (!list.contains(new Vector2(desX, desY))) {
             list.addAll(this.getWays((int)temp1.x, (int)temp1.y, this));
             temp1 = list.pop();
-            System.out.println("Check="+temp1.equals(new Vector2(desX, desY))+" , (" + temp1.x+","+temp1.y+")");
         }
         temp1 = new Vector2(desX, desY);
         while (!temp1.equals(new Vector2(scrX, scrY))) {
-            path.add(temp1);
+            path.addFirst(temp1);
             temp1 = map[(int)temp1.y][(int)temp1.x].getParent();
         }
-        System.out.println("Check path before return");
-        for (Vector2 vec: path) {
-            System.out.println((int)vec.x + ","+(int)vec.y);
-        }
+        this.resetVisit();
         return path;
     }
 
@@ -80,7 +75,6 @@ public class Board {
                     stop = start + (2*n) - Math.abs(y-i)+1;
                 }
                 else {
-                    System.out.println("x="+x+" n="+n+" y="+y+" i="+i);
                     start = (x - n + Math.ceil(Math.abs(y-i)/2));
                     stop = start + (2*n)-Math.abs(y-i)+1;
                 }
@@ -145,6 +139,14 @@ public class Board {
     public void setObstacle(int x, int y, int n) {
         if (0 <= x && x <= 23 && 0 <= y && y <= 12 && !this.map[x][y].isObstacle()) {
             this.map[x][y].setObstacle(n);
+        }
+    }
+
+    public void resetVisit() {
+        for (int row=0; row < 13; row++) {
+            for (int col=0; col < 24; col++) {
+                map[row][col].setVisit(false);
+            }
         }
     }
 }

@@ -317,11 +317,16 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
             ipctrl = 1;
             path = new LinkedList<Vector2>();
-            path.addAll(board.getPath(3,3,6,3,3));
+            path.addAll(board.getPath(4,7,19,3,1));
 //            path.addAll(board.getPath(3, 3, 6,4, 3));
             System.out.println("GET PATH!! Path size = " + path.size());
             for (Vector2 v: path) {
-                System.out.println((int) v.x + "," + (int) v.y);
+                if (!(path.indexOf(v) == path.size()-1)) {
+                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
+                }
+                else {
+                    System.out.print((int) v.x + "," + (int) v.y);
+                }
             }
             ipctrl = 0;
           }
