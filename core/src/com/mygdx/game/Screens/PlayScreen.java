@@ -120,217 +120,216 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 //        //controll camera
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-//            gamecam.position.x += 100 * dt;
-//        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-//            gamecam.position.x -= 100 * dt;
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-//            gamecam.position.y += 100 * dt;
-//        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-//            gamecam.position.y -= 100 * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            gamecam.position.x += 100 * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            gamecam.position.x -= 100 * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            gamecam.position.y += 100 * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            gamecam.position.y -= 100 * dt;
 
-        //Right-move control
-//        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.getWalking() == 0) {
-//            player.setDes(board.map[player.row][player.col+1].corX,
-//                    board.map[player.row][player.col+1].corY);
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(1);
-//        }
-//        else if (player.getWalking() == 1) {
-//            if (player.getCoordinates().x < player.getDes().x) {
-//                player.setFacing(Hero.State.RIGHT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
-//                        player.getCoordinates().y);
-//            }
-//            else {
-//                player.setRowCol(player.row, player.col+1);
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
-//        }
-//
-//        //Left-move control
-//        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.getWalking() == 0) {
-//            player.setDes(board.map[player.row][Math.max(0, player.col-1)].corX,
-//                    board.map[player.row][Math.max(0, player.col-1)].corY);
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(2);
-//        }
-//        else if (player.getWalking() == 2) {
-//            if (player.getCoordinates().x > player.getDes().x) {
-//                player.setFacing(Hero.State.LEFT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3)/2) * tilePixelHeight * dt,
-//                        player.getCoordinates().y);
-//            }
-//            else {
-//                player.setRowCol(player.row, Math.max(0, player.col-1));
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
-//        }
-//
-//        //Up-Right combination move
-//        if (Gdx.input.isKeyPressed(Input.Keys.E) && player.getWalking() == 0) {
-//            if (player.row%2 == 0) {
-//                player.setDes(board.map[Math.max(0, player.row-1)][player.col+1].corX,
-//                        board.map[Math.max(0, player.row-1)][player.col+1].corY);
-//            }
-//            else {
-//                player.setDes(board.map[Math.max(0, player.row-1)][player.col].corX,
-//                        board.map[Math.max(0, player.row-1)][player.col].corY);
-//            }
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(3);
-//        }
-//        else if (player.getWalking() == 3) {
-//            if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y < player.getDes().y) {
-//                player.setFacing(Hero.State.RIGHT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                if (player.getCoordinates().x < player.getDes().x) {
-//                    player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
-//                            player.getCoordinates().y);
-//                }
-//                if (player.getCoordinates().y < player.getDes().y) {
-//                    player.setCoordinates(player.getCoordinates().x,
-//                            player.getCoordinates().y += tilePixelHeight * dt);
-//                }
-//            }
-//            else if (player.getCoordinates().x >= player.getDes().x && player.getCoordinates().y >= player.getDes().y){
-//                if (player.row%2 == 0) {
-//                    player.setRowCol(Math.max(0, player.row-1), player.col+1);
-//                }
-//                else {
-//                    player.setRowCol(Math.max(0, player.row-1), player.col);
-//                }
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
-//        }
-//
-//        //Down-Right combination move
-//        if (Gdx.input.isKeyPressed(Input.Keys.C) && player.getWalking() == 0) {
-//            if (player.row%2 == 0) {
-//                player.setDes(board.map[player.row+1][player.col+1].corX, board.map[player.row+1][player.col+1].corY);
-//            }
-//            else {
-//                player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
-//            }
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(4);
-//        }
-//        else if (player.getWalking() == 4) {
-//            if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y > player.getDes().y) {
-//                player.setFacing(Hero.State.RIGHT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                if (player.getCoordinates().x < player.getDes().x) {
-//                    player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
-//                            player.getCoordinates().y);
-//                }
-//                if (player.getCoordinates().y > player.getDes().y) {
-//                    player.setCoordinates(player.getCoordinates().x,
-//                            player.getCoordinates().y -= tilePixelHeight * dt);
-//                }
-//            }
-//            else if (player.getCoordinates().x >= player.getDes().x && player.getCoordinates().y <= player.getDes().y){
-//                if (player.row%2 == 0) {
-//                    player.setRowCol(player.row+1, player.col+1);
-//                }
-//                else {
-//                    player.setRowCol( player.row+1, player.col);
-//                }
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
-//        }
-//
-//        //Up-Left combination move
-//        if (Gdx.input.isKeyPressed(Input.Keys.Q) && player.getWalking() == 0) {
-//            if (player.row%2 == 0) {
-//                player.setDes(board.map[player.row-1][player.col].corX, board.map[player.row-1][player.col].corY);
-//            }
-//            else {
-//                player.setDes(board.map[player.row-1][player.col-1].corX, board.map[player.row-1][player.col-1].corY);
-//            }
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(5);
-//        }
-//        else if (player.getWalking() == 5) {
-//            if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y < player.getDes().y) {
-//                player.setFacing(Hero.State.LEFT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                if (player.getCoordinates().x > player.getDes().x) {
-//                    player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3)/2) * tilePixelHeight * dt,
-//                            player.getCoordinates().y);
-//                }
-//                if (player.getCoordinates().y < player.getDes().y) {
-//                    player.setCoordinates(player.getCoordinates().x,
-//                            player.getCoordinates().y += tilePixelHeight * dt);
-//                }
-//            }
-//            else if (player.getCoordinates().x <= player.getDes().x && player.getCoordinates().y >= player.getDes().y){
-//                if (player.row%2 == 0) {
-//                    player.setRowCol(player.row-1, player.col);
-//                }
-//                else {
-//                    player.setRowCol( player.row-1, player.col-1);
-//                }
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
-//        }
-//
-//        //Down-Left combination move
-//        if (Gdx.input.isKeyPressed(Input.Keys.Z) && player.getWalking() == 0) {
-//            if (player.row%2 == 0) {
-//                player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
-//            }
-//            else {
-//                player.setDes(board.map[player.row+1][player.col-1].corX, board.map[player.row+1][player.col-1].corY);
-//            }
-//            player.setCurrentState(Hero.State.WALKING);
-//            player.setWalking(6);
-//        }
-//        else if (player.getWalking() == 6) {
-//            if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y > player.getDes().y) {
-//                player.setFacing(Hero.State.LEFT);
-//                player.setCurrentState(Hero.State.WALKING);
-//                if (player.getCoordinates().x > player.getDes().x) {
-//                    player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3) / 2) * tilePixelHeight * dt,
-//                            player.getCoordinates().y);
-//                }
-//                if (player.getCoordinates().y > player.getDes().y) {
-//                    player.setCoordinates(player.getCoordinates().x,
-//                            player.getCoordinates().y -= tilePixelHeight * dt);
-//                }
-//            } else if (player.getCoordinates().x <= player.getDes().x && player.getCoordinates().y <= player.getDes().y) {
-//                if (player.row % 2 == 0) {
-//                    player.setRowCol(player.row + 1, player.col);
-//                } else {
-//                    player.setRowCol(player.row + 1, player.col - 1);
-//                }
-//                player.setWalking(0);
-//                player.setCurrentState(Hero.State.STANDING);
-//            }
+//        Right-move control
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.getWalking() == 0) {
+            player.setDes(board.map[player.row][player.col+1].corX,
+                    board.map[player.row][player.col+1].corY);
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(1);
+        }
+        else if (player.getWalking() == 1) {
+            if (player.getCoordinates().x < player.getDes().x) {
+                player.setFacing(Hero.State.RIGHT);
+                player.setCurrentState(Hero.State.WALKING);
+                player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
+                        player.getCoordinates().y);
+            }
+            else {
+                player.setRowCol(player.row, player.col+1);
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
-            ipctrl = 1;
-            path = new LinkedList<Vector2>();
-            path.addAll(board.getPath(4,7,19,3,1));
-//            path.addAll(board.getPath(3, 3, 6,4, 3));
-            System.out.println("GET PATH!! Path size = " + path.size());
-            for (Vector2 v: path) {
-                if (!(path.indexOf(v) == path.size()-1)) {
-                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
+        //Left-move control
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.getWalking() == 0) {
+            player.setDes(board.map[player.row][Math.max(0, player.col-1)].corX,
+                    board.map[player.row][Math.max(0, player.col-1)].corY);
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(2);
+        }
+        else if (player.getWalking() == 2) {
+            if (player.getCoordinates().x > player.getDes().x) {
+                player.setFacing(Hero.State.LEFT);
+                player.setCurrentState(Hero.State.WALKING);
+                player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3)/2) * tilePixelHeight * dt,
+                        player.getCoordinates().y);
+            }
+            else {
+                player.setRowCol(player.row, Math.max(0, player.col-1));
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+
+        //Up-Right combination move
+        if (Gdx.input.isKeyPressed(Input.Keys.E) && player.getWalking() == 0) {
+            if (player.row%2 == 0) {
+                player.setDes(board.map[Math.max(0, player.row-1)][player.col+1].corX,
+                        board.map[Math.max(0, player.row-1)][player.col+1].corY);
+            }
+            else {
+                player.setDes(board.map[Math.max(0, player.row-1)][player.col].corX,
+                        board.map[Math.max(0, player.row-1)][player.col].corY);
+            }
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(3);
+        }
+        else if (player.getWalking() == 3) {
+            if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y < player.getDes().y) {
+                player.setFacing(Hero.State.RIGHT);
+                player.setCurrentState(Hero.State.WALKING);
+                if (player.getCoordinates().x < player.getDes().x) {
+                    player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
+                            player.getCoordinates().y);
                 }
-                else {
-                    System.out.print((int) v.x + "," + (int) v.y);
+                if (player.getCoordinates().y < player.getDes().y) {
+                    player.setCoordinates(player.getCoordinates().x,
+                            player.getCoordinates().y += tilePixelHeight * dt);
                 }
             }
-            ipctrl = 0;
-          }
-        // No input go to STANDING state
+            else if (player.getCoordinates().x >= player.getDes().x && player.getCoordinates().y >= player.getDes().y){
+                if (player.row%2 == 0) {
+                    player.setRowCol(Math.max(0, player.row-1), player.col+1);
+                }
+                else {
+                    player.setRowCol(Math.max(0, player.row-1), player.col);
+                }
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+
+        //Down-Right combination move
+        if (Gdx.input.isKeyPressed(Input.Keys.C) && player.getWalking() == 0) {
+            if (player.row%2 == 0) {
+                player.setDes(board.map[player.row+1][player.col+1].corX, board.map[player.row+1][player.col+1].corY);
+            }
+            else {
+                player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
+            }
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(4);
+        }
+        else if (player.getWalking() == 4) {
+            if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y > player.getDes().y) {
+                player.setFacing(Hero.State.RIGHT);
+                player.setCurrentState(Hero.State.WALKING);
+                if (player.getCoordinates().x < player.getDes().x) {
+                    player.setCoordinates(player.getCoordinates().x += (Math.sqrt(3)/2) * tilePixelHeight * dt,
+                            player.getCoordinates().y);
+                }
+                if (player.getCoordinates().y > player.getDes().y) {
+                    player.setCoordinates(player.getCoordinates().x,
+                            player.getCoordinates().y -= tilePixelHeight * dt);
+                }
+            }
+            else if (player.getCoordinates().x >= player.getDes().x && player.getCoordinates().y <= player.getDes().y){
+                if (player.row%2 == 0) {
+                    player.setRowCol(player.row+1, player.col+1);
+                }
+                else {
+                    player.setRowCol( player.row+1, player.col);
+                }
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+
+        //Up-Left combination move
+        if (Gdx.input.isKeyPressed(Input.Keys.Q) && player.getWalking() == 0) {
+            if (player.row%2 == 0) {
+                player.setDes(board.map[player.row-1][player.col].corX, board.map[player.row-1][player.col].corY);
+            }
+            else {
+                player.setDes(board.map[player.row-1][player.col-1].corX, board.map[player.row-1][player.col-1].corY);
+            }
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(5);
+        }
+        else if (player.getWalking() == 5) {
+            if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y < player.getDes().y) {
+                player.setFacing(Hero.State.LEFT);
+                player.setCurrentState(Hero.State.WALKING);
+                if (player.getCoordinates().x > player.getDes().x) {
+                    player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3)/2) * tilePixelHeight * dt,
+                            player.getCoordinates().y);
+                }
+                if (player.getCoordinates().y < player.getDes().y) {
+                    player.setCoordinates(player.getCoordinates().x,
+                            player.getCoordinates().y += tilePixelHeight * dt);
+                }
+            }
+            else if (player.getCoordinates().x <= player.getDes().x && player.getCoordinates().y >= player.getDes().y){
+                if (player.row%2 == 0) {
+                    player.setRowCol(player.row-1, player.col);
+                }
+                else {
+                    player.setRowCol( player.row-1, player.col-1);
+                }
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+        }
+
+        //Down-Left combination move
+        if (Gdx.input.isKeyPressed(Input.Keys.Z) && player.getWalking() == 0) {
+            if (player.row%2 == 0) {
+                player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
+            }
+            else {
+                player.setDes(board.map[player.row+1][player.col-1].corX, board.map[player.row+1][player.col-1].corY);
+            }
+            player.setCurrentState(Hero.State.WALKING);
+            player.setWalking(6);
+        }
+        else if (player.getWalking() == 6) {
+            if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y > player.getDes().y) {
+                player.setFacing(Hero.State.LEFT);
+                player.setCurrentState(Hero.State.WALKING);
+                if (player.getCoordinates().x > player.getDes().x) {
+                    player.setCoordinates(player.getCoordinates().x -= (Math.sqrt(3) / 2) * tilePixelHeight * dt,
+                            player.getCoordinates().y);
+                }
+                if (player.getCoordinates().y > player.getDes().y) {
+                    player.setCoordinates(player.getCoordinates().x,
+                            player.getCoordinates().y -= tilePixelHeight * dt);
+                }
+            } else if (player.getCoordinates().x <= player.getDes().x && player.getCoordinates().y <= player.getDes().y) {
+                if (player.row % 2 == 0) {
+                    player.setRowCol(player.row + 1, player.col);
+                } else {
+                    player.setRowCol(player.row + 1, player.col - 1);
+                }
+                player.setWalking(0);
+                player.setCurrentState(Hero.State.STANDING);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
+                ipctrl = 1;
+                path = new LinkedList<Vector2>();
+                path.addAll(board.getPath(12, 0, 18, 8, 1));
+//            path.addAll(board.getPath(3, 3, 6,4, 3));
+                System.out.println("GET PATH!! Path size = " + path.size());
+                for (Vector2 v : path) {
+                    if (!(path.indexOf(v) == path.size() - 1)) {
+                        System.out.print((int) v.x + "," + (int) v.y + " -> ");
+                    } else {
+                        System.out.print((int) v.x + "," + (int) v.y);
+                    }
+                }
+                ipctrl = 0;
+            }
+            // No input go to STANDING state
 //        if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
 //            player.setCurrentState(Hero.State.STANDING);
 //        }
@@ -358,6 +357,7 @@ public class PlayScreen implements Screen {
 //        if (check == 0) {
 //            player.setCurrentState(Hero.State.STANDING);
 //        }
+        }
     }
 
     public void update(float dt) {
