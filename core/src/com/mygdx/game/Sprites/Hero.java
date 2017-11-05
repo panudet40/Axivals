@@ -61,6 +61,9 @@ public class Hero extends TextureAtlas {
         this.row = row;
         this.col = col;
     }
+    public Vector2 getRowCol() {
+        return new Vector2(this.col, this.row);
+    }
     public void setDes(float x, float y) {
         this.des.set(x, y);
     }

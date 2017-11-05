@@ -41,10 +41,14 @@ public class Board {
         }
     }
 
-    public List<Vector2> getPath(int scrX, int scrY, int desX, int desY, int walk) {
+    public List<Vector2> getPath(Vector2 source, Vector2 destination, int walk) {
         Vector2 temp1;
-        area = new LinkedList<Vector2>();
+        int scrX = (int) source.x;
+        int scrY = (int) source.y;
+        int desX = (int) destination.x;
+        int desY = (int) destination.y;
         path = new LinkedList<Vector2>();
+        area = new LinkedList<Vector2>();
         list = new LinkedList<Vector2>();
         list.add(new Vector2(scrX, scrY));
         map[scrY][scrX].setVisit(true);
@@ -102,20 +106,20 @@ public class Board {
         ways = new LinkedList<Vector2>();
         temp = new LinkedList<Vector2>();
         if (y%2 == 0) {
-            temp.add(new Vector2(x+1, y));
-            temp.add(new Vector2(x+1, y+1));
-            temp.add(new Vector2(x, y+1));
-            temp.add(new Vector2(x-1, y));
-            temp.add(new Vector2(x, y-1));
-            temp.add(new Vector2(x+1, y-1));
+            temp.add(new Vector2(x+1, y)); //Right
+            temp.add(new Vector2(x+1, y+1)); //Right-Down
+            temp.add(new Vector2(x, y+1)); //Left-Down
+            temp.add(new Vector2(x-1, y)); //Left
+            temp.add(new Vector2(x, y-1)); //Left-Up
+            temp.add(new Vector2(x+1, y-1)); //Up-Right
         }
         else {
-            temp.add(new Vector2(x+1, y));
-            temp.add(new Vector2(x, y+1));
-            temp.add(new Vector2(x-1, y+1));
-            temp.add(new Vector2(x-1, y));
-            temp.add(new Vector2(x-1, y-1));
-            temp.add(new Vector2(x, y-1));
+            temp.add(new Vector2(x+1, y)); //Right
+            temp.add(new Vector2(x, y+1)); //Right-Down
+            temp.add(new Vector2(x-1, y+1)); //Left-Down
+            temp.add(new Vector2(x-1, y)); //Left
+            temp.add(new Vector2(x-1, y-1)); //Left-Up
+            temp.add(new Vector2(x, y-1)); //Right-Up
         }
         area2.addAll(this.getArea(x, y, 1));
         temp.retainAll(area2);
