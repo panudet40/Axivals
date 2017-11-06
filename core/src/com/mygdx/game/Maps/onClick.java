@@ -37,6 +37,7 @@ public class onClick {
                 }
             }
         }
+        System.out.println(colX+","+rowY+" was clicked");
         return new Vector2(colX, rowY);
     }
 }

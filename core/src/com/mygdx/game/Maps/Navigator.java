@@ -1,59 +1,69 @@
 package com.mygdx.game.Maps;
 
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.LinkedList;
 import java.util.List;
 
 public class Navigator {
-    private int ptr=0;
+    private int ptr=0, route=0;
     private Vector2 start, temp;
     private Vector2[] path;
+    private int routing=0;
 
-    public Navigator(Vector2 start, List<Vector2> path) {
+    public void setPath(Vector2 start, List<Vector2> path) {
         this.path = (Vector2[]) path.toArray(new Vector2[path.size()]);
         this.start = start;
+        this.routing = 0;
     }
 
-    public int getRoute() {
+    public void routing() {
         temp = new Vector2(path[ptr].x-start.x, path[ptr].y-start.y);
-        if (path[ptr].y%2==0) {
+        if (start.y%2==0) {
             if (temp.equals(new Vector2(1, 0))) //Right
-                return 1;
+                this.route = 1;
             if (temp.equals(new Vector2(1, 1))) //Right-Down
-                return 4;
+                this.route = 4;
             if (temp.equals(new Vector2(0, 1))) //Left-Down
-                return 6;
+                this.route = 6;
             if (temp.equals(new Vector2(-1, 0))) //Left
-                return 2;
+                this.route = 2;
             if (temp.equals(new Vector2(0, -1))) //Left-Up
-                return 5;
+                this.route = 5;
             if (temp.equals(new Vector2(1, -1))) //Right-Up
-                return 3;
+                this.route = 3;
         }
         else {
             if (temp.equals(new Vector2(1, 0))) //Right
-                return 1;
+                this.route = 1;
             if (temp.equals(new Vector2(0, 1))) //Right-Down
-                return 4;
+                this.route = 4;
             if (temp.equals(new Vector2(-1, 1))) //Left-Down
-                return 6;
+                this.route = 6;
             if (temp.equals(new Vector2(-1, 0))) //Left
-                return 2;
+                this.route = 2;
             if (temp.equals(new Vector2(-1, -1))) //Left-Up
-                return 5;
+                this.route = 5;
             if (temp.equals(new Vector2(0, -1))) //Right-Up
-                return 3;
+                this.route = 3;
         }
-        return 0;
+        if (!path[path.length-1].equals(path[ptr])) {
+            this.start = path[ptr];
+            this.ptr++;
+        }
+        else {
+            this.ptr = 0;
+            this.route = 0;
+        }
     }
 
-    public void increase() {
-        this.start = path[ptr];
-        this.ptr++;
+    public int getRoute() {
+        return this.route;
     }
 
-    public void reset() {
-        this.ptr=0;
+    public void setRouting(int routing) {
+        this.routing = 1;
+    }
+
+    public int isRouting() {
+        return this.routing;
     }
 }

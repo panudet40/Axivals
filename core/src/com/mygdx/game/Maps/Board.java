@@ -41,7 +41,7 @@ public class Board {
         }
     }
 
-    public List<Vector2> getPath(Vector2 source, Vector2 destination, int walk) {
+    public List<Vector2> getPath(Vector2 source, Vector2 destination) {
         Vector2 temp1;
         int scrX = (int) source.x;
         int scrY = (int) source.y;
@@ -67,7 +67,6 @@ public class Board {
     }
 
     public LinkedList<Vector2> getArea(int x, int y, int n) {
-        System.out.println("getArea x = " + x + " y = " + y + " n = " + n);
         int idx = 0;
         double start;
         double stop;
@@ -90,18 +89,12 @@ public class Board {
                         }
                     }
                 }
-                System.out.println("Range(" +start+","+stop+")");
             }
-        }
-        System.out.println("("+x+","+y+") check area1 before return");
-        for (Vector2 vec: area1) {
-            System.out.println((int)vec.x+","+(int)vec.y);
         }
         return area1;
     }
 
     public LinkedList<Vector2> getWays(int x, int y, Board board) {
-        System.out.println("INTO GET WAYS");
         area2 = new LinkedList<Vector2>();
         ways = new LinkedList<Vector2>();
         temp = new LinkedList<Vector2>();
@@ -124,19 +117,12 @@ public class Board {
         area2.addAll(this.getArea(x, y, 1));
         temp.retainAll(area2);
         for (Vector2 node: temp) {
-            System.out.println((int)node.x+","+(int)node.y+" isVisit="+board.map[(int)node.y][(int)node.x].isVisit());
             if (!board.map[(int)node.y][(int)node.x].isVisit()) {
-                System.out.println((int)node.x+","+(int)node.y);
                 ways.add(node);
                 board.map[(int)node.y][(int)node.x].setVisit(true);
                 board.map[(int)node.y][(int)node.x].setParent(x, y);
             }
         }
-        System.out.println("Way before return of "+x+","+y);
-        for (Vector2 vec: ways) {
-            System.out.println((int)vec.x+","+(int)vec.y);
-        }
-        System.out.println("Ways will return");
         return  ways;
     }
 

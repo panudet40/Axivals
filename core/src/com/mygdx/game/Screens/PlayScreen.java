@@ -75,7 +75,7 @@ public class PlayScreen implements Screen, InputProcessor {
     //Navigator variable
     private Navigator walker;
 
-    private int ipctrl=0, onclk=0;
+    int ipctrl=0;
 
     public PlayScreen(Axivals game) {
 
@@ -109,6 +109,9 @@ public class PlayScreen implements Screen, InputProcessor {
         //create onClick
         click = new onClick(this, board);
 
+        //create navigator
+        walker = new Navigator();
+
         //create coordinate
         screenCoordinates = new Vector3();
         des = new Vector2(0, 0);
@@ -126,6 +129,7 @@ public class PlayScreen implements Screen, InputProcessor {
         //initially set our gamcam to be centered correctly at the start of map
         gamecam.position.set(mapPixelWidth / 2 + 12 , mapPixelHeight / 2 - 77, 0);
 
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -143,28 +147,32 @@ public class PlayScreen implements Screen, InputProcessor {
 //            gamecam.position.y += 100 * dt;
 //        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
 //            gamecam.position.y -= 100 * dt;
-
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && onclk == 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
+            ipctrl = 1;
             path = new LinkedList<Vector2>();
-            System.out.println("Mouse clicked!");
-            onclk = 1;
             float x = Gdx.input.getX();
             float y =  Math.abs(mapPixelHeight-Gdx.input.getY());
-            System.out.println("Send " + x + "," + y + " into click!");
             Vector2 goal = click.getRowCol(x, y);
-            System.out.println("Row-Column = " + goal.y + "," + goal.x);
-            path.addAll(board.getPath(player.getRowCol(), goal, 1));
-            walker = new Navigator(player.getRowCol(), path);
+            path.addAll(board.getPath(player.getRowCol(), goal));
+            System.out.println("GET PATH!! Path size = " + path.size());
+            for (Vector2 v : path) {
+                if (!(path.indexOf(v) == path.size() - 1)) {
+                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
+                } else {
+                    System.out.print((int) v.x + "," + (int) v.y);
+                }
+            }
+//            ipctrl = 0;
         }
 
 //        Right-move control
         if (walker.getRoute() == 1 && player.getWalking() == 0) {
+            player.setWalking(1);
+            player.setCurrentState(Hero.State.WALKING);
             player.setDes(board.map[player.row][player.col+1].corX,
                     board.map[player.row][player.col+1].corY);
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(1);
         }
-        else if (player.getWalking() == 1) {
+        else if (player.getWalking() == 1 && walker.getRoute() == 1) {
             if (player.getCoordinates().x < player.getDes().x) {
                 player.setFacing(Hero.State.RIGHT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -175,18 +183,18 @@ public class PlayScreen implements Screen, InputProcessor {
                 player.setRowCol(player.row, player.col+1);
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
         }
 
         //Left-move control
         if (walker.getRoute() == 2 && player.getWalking() == 0) {
+            player.setWalking(2);
+            player.setCurrentState(Hero.State.WALKING);
             player.setDes(board.map[player.row][Math.max(0, player.col-1)].corX,
                     board.map[player.row][Math.max(0, player.col-1)].corY);
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(2);
         }
-        else if (player.getWalking() == 2) {
+        else if (player.getWalking() == 2 && walker.getRoute() == 2) {
             if (player.getCoordinates().x > player.getDes().x) {
                 player.setFacing(Hero.State.LEFT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -197,12 +205,14 @@ public class PlayScreen implements Screen, InputProcessor {
                 player.setRowCol(player.row, Math.max(0, player.col-1));
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
         }
 
         //Up-Right combination move
         if (walker.getRoute() == 3 && player.getWalking() == 0) {
+            player.setWalking(3);
+            player.setCurrentState(Hero.State.WALKING);
             if (player.row%2 == 0) {
                 player.setDes(board.map[Math.max(0, player.row-1)][player.col+1].corX,
                         board.map[Math.max(0, player.row-1)][player.col+1].corY);
@@ -211,10 +221,8 @@ public class PlayScreen implements Screen, InputProcessor {
                 player.setDes(board.map[Math.max(0, player.row-1)][player.col].corX,
                         board.map[Math.max(0, player.row-1)][player.col].corY);
             }
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(3);
         }
-        else if (player.getWalking() == 3) {
+        else if (player.getWalking() == 3 && walker.getRoute() == 3) {
             if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y < player.getDes().y) {
                 player.setFacing(Hero.State.RIGHT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -236,22 +244,22 @@ public class PlayScreen implements Screen, InputProcessor {
                 }
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
         }
 
         //Down-Right combination move
         if (walker.getRoute() == 4 && player.getWalking() == 0) {
+            player.setWalking(4);
+            player.setCurrentState(Hero.State.WALKING);
             if (player.row%2 == 0) {
                 player.setDes(board.map[player.row+1][player.col+1].corX, board.map[player.row+1][player.col+1].corY);
             }
             else {
                 player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
             }
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(4);
         }
-        else if (player.getWalking() == 4) {
+        else if (player.getWalking() == 4 && walker.getRoute() == 4) {
             if (player.getCoordinates().x < player.getDes().x || player.getCoordinates().y > player.getDes().y) {
                 player.setFacing(Hero.State.RIGHT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -273,22 +281,22 @@ public class PlayScreen implements Screen, InputProcessor {
                 }
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
         }
 
         //Up-Left combination move
         if (walker.getRoute() == 5 && player.getWalking() == 0) {
+            player.setWalking(5);
+            player.setCurrentState(Hero.State.WALKING);
             if (player.row%2 == 0) {
                 player.setDes(board.map[player.row-1][player.col].corX, board.map[player.row-1][player.col].corY);
             }
             else {
                 player.setDes(board.map[player.row-1][player.col-1].corX, board.map[player.row-1][player.col-1].corY);
             }
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(5);
         }
-        else if (player.getWalking() == 5) {
+        else if (player.getWalking() == 5 && walker.getRoute() == 5) {
             if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y < player.getDes().y) {
                 player.setFacing(Hero.State.LEFT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -310,22 +318,22 @@ public class PlayScreen implements Screen, InputProcessor {
                 }
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
         }
 
         //Down-Left combination move
         if (walker.getRoute() == 6 && player.getWalking() == 0) {
+            player.setWalking(6);
+            player.setCurrentState(Hero.State.WALKING);
             if (player.row%2 == 0) {
                 player.setDes(board.map[player.row+1][player.col].corX, board.map[player.row+1][player.col].corY);
             }
             else {
                 player.setDes(board.map[player.row+1][player.col-1].corX, board.map[player.row+1][player.col-1].corY);
             }
-            player.setCurrentState(Hero.State.WALKING);
-            player.setWalking(6);
         }
-        else if (player.getWalking() == 6) {
+        else if (player.getWalking() == 6 && walker.getRoute() == 6) {
             if (player.getCoordinates().x > player.getDes().x || player.getCoordinates().y > player.getDes().y) {
                 player.setFacing(Hero.State.LEFT);
                 player.setCurrentState(Hero.State.WALKING);
@@ -345,22 +353,8 @@ public class PlayScreen implements Screen, InputProcessor {
                 }
                 player.setWalking(0);
                 player.setCurrentState(Hero.State.STANDING);
-                walker.increase();
+                walker.routing();
             }
-//            if (Gdx.input.isKeyPressed(Input.Keys.X) && ipctrl == 0) {
-//                ipctrl = 1;
-//                path = new LinkedList<Vector2>();
-//                path.addAll(board.getPath(12, 0, 18, 8, 1));
-//                System.out.println("GET PATH!! Path size = " + path.size());
-//                for (Vector2 v : path) {
-//                    if (!(path.indexOf(v) == path.size() - 1)) {
-//                        System.out.print((int) v.x + "," + (int) v.y + " -> ");
-//                    } else {
-//                        System.out.print((int) v.x + "," + (int) v.y);
-//                    }
-//                }
-//                ipctrl = 0;
-//            }
             // No input go to STANDING state
 //        if (player.currentState.compareTo(Hero.State.STANDING) == 0) {
 //            player.setCurrentState(Hero.State.STANDING);
@@ -444,9 +438,9 @@ public class PlayScreen implements Screen, InputProcessor {
         font.draw(game.batch, "Row-Column", 900, 660);
         font.draw(game.batch, player.row + " , " + player.col, 920, 635);
 
-        //animation
-//        game.batch.draw(player.action().getKeyFrame(player.getElapsedTime(), true),
-//                player.getCoordinates().x, player.getCoordinates().y);
+        //render walk coordinates
+        font.draw(game.batch, "Routing", 1000, 660);
+        font.draw(game.batch, Integer.toString(player.getWalking()), 1000, 635);
 
         game.batch.end();
 
@@ -458,8 +452,8 @@ public class PlayScreen implements Screen, InputProcessor {
         game.batch.begin();
         if (player.facing.compareTo(Hero.State.RIGHT) == 0) {
             game.batch.draw(player.action().getKeyFrame(player.getElapsedTime(), true),
-                    player.getCoordinates().x + (player.action().getKeyFrame(player.getElapsedTime(), true).getRegionWidth())
-                    , player.getCoordinates().y,
+                    player.getCoordinates().x + (player.action().getKeyFrame(player.getElapsedTime(),
+                            true).getRegionWidth()), player.getCoordinates().y,
                     -(player.action().getKeyFrame(player.getElapsedTime(), true).getRegionWidth()),
                     player.action().getKeyFrame(player.getElapsedTime(), true).getRegionHeight());
         }
@@ -513,6 +507,60 @@ public class PlayScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && walker.isRouting() == 0) {
+            walker.setRouting(1);
+            System.out.println("Mouse clicked!");
+            float x = Gdx.input.getX();
+            float y =  Math.abs(mapPixelHeight-Gdx.input.getY());
+            path = new LinkedList<Vector2>();
+            Vector2 goal = click.getRowCol(x, y);
+            System.out.println("Column-Row = " + goal.x + "," + goal.y);
+            path.addAll(board.getPath(player.getRowCol(), goal));
+            for (Vector2 v : path) {
+                if (!(path.indexOf(v) == path.size() - 1)) {
+                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
+                } else {
+                    System.out.println((int) v.x + "," + (int) v.y);
+                }
+            }
+            Vector2 start = new Vector2(player.getRowCol());
+            int num=1;
+            for (Vector2 v: path) {
+                Vector2 temp = new Vector2(v.x-start.x, v.y-start.y);
+                if (start.y%2==0) {
+                    if (temp.equals(new Vector2(1, 0))) //Right
+                        System.out.println(num+"//Right");
+                    if (temp.equals(new Vector2(1, 1))) //Right-Down
+                        System.out.println(num+"//Right-Down");
+                    if (temp.equals(new Vector2(0, 1))) //Left-Down
+                        System.out.println(num+"//Left-Down");
+                    if (temp.equals(new Vector2(-1, 0))) //Left
+                        System.out.println(num+" //Left");
+                    if (temp.equals(new Vector2(0, -1))) //Left-Up
+                        System.out.println(num+" //Left-Up");
+                    if (temp.equals(new Vector2(1, -1))) //Right-Up
+                        System.out.println(num+" //Right-Up");
+                }
+                else {
+                    if (temp.equals(new Vector2(1, 0))) //Right
+                        System.out.println(num+"//Right");
+                    if (temp.equals(new Vector2(0, 1))) //Right-Down
+                        System.out.println(num+"//Right-Down");
+                    if (temp.equals(new Vector2(-1, 1))) //Left-Down
+                        System.out.println(num+" //Left-Down");
+                    if (temp.equals(new Vector2(-1, 0))) //Left
+                        System.out.println(num+" //Left");
+                    if (temp.equals(new Vector2(-1, -1))) //Left-Up
+                        System.out.println(num+") //Left-Up");
+                    if (temp.equals(new Vector2(0, -1))) //Right-Up
+                        System.out.println(num+" //Right-Up");
+                }
+                num++;
+                start = new Vector2(v);
+            }
+            walker.setPath(player.getRowCol(), path);
+            walker.routing();
+        }
         return false;
     }
 
