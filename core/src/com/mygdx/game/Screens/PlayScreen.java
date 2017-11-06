@@ -508,7 +508,7 @@ public class PlayScreen implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 rowcol = click.getRowCol(screenX, Math.abs(mapPixelHeight - screenY));
-        if (!board.map[(int)rowcol.y][(int)rowcol.x].isObstacle()) {
+        if (!board.map[(int)rowcol.y][(int)rowcol.x].isObstacle() && walker.getRoute() == 0) {
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && walker.isRouting() == 0) {
                 walker.setRouting(1);
                 System.out.println("Mouse clicked!");
