@@ -507,59 +507,63 @@ public class PlayScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && walker.isRouting() == 0) {
-            walker.setRouting(1);
-            System.out.println("Mouse clicked!");
-            float x = Gdx.input.getX();
-            float y =  Math.abs(mapPixelHeight-Gdx.input.getY());
-            path = new LinkedList<Vector2>();
-            Vector2 goal = click.getRowCol(x, y);
-            System.out.println("Column-Row = " + goal.x + "," + goal.y);
-            path.addAll(board.getPath(player.getRowCol(), goal));
-            for (Vector2 v : path) {
-                if (!(path.indexOf(v) == path.size() - 1)) {
-                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
-                } else {
-                    System.out.println((int) v.x + "," + (int) v.y);
-                }
-            }
-            Vector2 start = new Vector2(player.getRowCol());
-            int num=1;
-            for (Vector2 v: path) {
-                Vector2 temp = new Vector2(v.x-start.x, v.y-start.y);
-                if (start.y%2==0) {
-                    if (temp.equals(new Vector2(1, 0))) //Right
-                        System.out.println(num+"//Right");
-                    if (temp.equals(new Vector2(1, 1))) //Right-Down
-                        System.out.println(num+"//Right-Down");
-                    if (temp.equals(new Vector2(0, 1))) //Left-Down
-                        System.out.println(num+"//Left-Down");
-                    if (temp.equals(new Vector2(-1, 0))) //Left
-                        System.out.println(num+" //Left");
-                    if (temp.equals(new Vector2(0, -1))) //Left-Up
-                        System.out.println(num+" //Left-Up");
-                    if (temp.equals(new Vector2(1, -1))) //Right-Up
-                        System.out.println(num+" //Right-Up");
-                }
-                else {
-                    if (temp.equals(new Vector2(1, 0))) //Right
-                        System.out.println(num+"//Right");
-                    if (temp.equals(new Vector2(0, 1))) //Right-Down
-                        System.out.println(num+"//Right-Down");
-                    if (temp.equals(new Vector2(-1, 1))) //Left-Down
-                        System.out.println(num+" //Left-Down");
-                    if (temp.equals(new Vector2(-1, 0))) //Left
-                        System.out.println(num+" //Left");
-                    if (temp.equals(new Vector2(-1, -1))) //Left-Up
-                        System.out.println(num+") //Left-Up");
-                    if (temp.equals(new Vector2(0, -1))) //Right-Up
-                        System.out.println(num+" //Right-Up");
-                }
-                num++;
-                start = new Vector2(v);
-            }
-            walker.setPath(player.getRowCol(), path);
-            walker.routing();
+        Vector2 rowcol = click.getRowCol(screenX, Math.abs(mapPixelHeight - screenY));
+        if (!board.map[(int)rowcol.y][(int)rowcol.x].isObstacle()) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && walker.isRouting() == 0) {
+                walker.setRouting(1);
+                System.out.println("Mouse clicked!");
+                float x = Gdx.input.getX();
+                float y =  Math.abs(mapPixelHeight-Gdx.input.getY());
+                path = new LinkedList<Vector2>();
+                Vector2 goal = click.getRowCol(x, y);
+                System.out.println("Column-Row = " + goal.x + "," + goal.y);
+                path.addAll(board.getPath(player.getRowCol(), goal));
+                walker.setPath(player.getRowCol(), path);
+                walker.routing();
+        }
+            //Debugging
+//            for (Vector2 v : path) {
+//                if (!(path.indexOf(v) == path.size() - 1)) {
+//                    System.out.print((int) v.x + "," + (int) v.y + " -> ");
+//                } else {
+//                    System.out.println((int) v.x + "," + (int) v.y);
+//                }
+//            }
+//            Vector2 start = new Vector2(player.getRowCol());
+//            int num=1;
+//            for (Vector2 v: path) {
+//                Vector2 temp = new Vector2(v.x-start.x, v.y-start.y);
+//                if (start.y%2==0) {
+//                    if (temp.equals(new Vector2(1, 0))) //Right
+//                        System.out.println(num+"//Right");
+//                    if (temp.equals(new Vector2(1, 1))) //Right-Down
+//                        System.out.println(num+"//Right-Down");
+//                    if (temp.equals(new Vector2(0, 1))) //Left-Down
+//                        System.out.println(num+"//Left-Down");
+//                    if (temp.equals(new Vector2(-1, 0))) //Left
+//                        System.out.println(num+" //Left");
+//                    if (temp.equals(new Vector2(0, -1))) //Left-Up
+//                        System.out.println(num+" //Left-Up");
+//                    if (temp.equals(new Vector2(1, -1))) //Right-Up
+//                        System.out.println(num+" //Right-Up");
+//                }
+//                else {
+//                    if (temp.equals(new Vector2(1, 0))) //Right
+//                        System.out.println(num+"//Right");
+//                    if (temp.equals(new Vector2(0, 1))) //Right-Down
+//                        System.out.println(num+"//Right-Down");
+//                    if (temp.equals(new Vector2(-1, 1))) //Left-Down
+//                        System.out.println(num+" //Left-Down");
+//                    if (temp.equals(new Vector2(-1, 0))) //Left
+//                        System.out.println(num+" //Left");
+//                    if (temp.equals(new Vector2(-1, -1))) //Left-Up
+//                        System.out.println(num+") //Left-Up");
+//                    if (temp.equals(new Vector2(0, -1))) //Right-Up
+//                        System.out.println(num+" //Right-Up");
+//                }
+//                num++;
+//                start = new Vector2(v);
+//            }
         }
         return false;
     }
