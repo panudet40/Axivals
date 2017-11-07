@@ -4,29 +4,41 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Axivals;
 import com.mygdx.game.Maps.Board;
+import com.mygdx.game.Maps.MapOverlay;
 import com.mygdx.game.Maps.Navigator;
 import com.mygdx.game.Maps.onClick;
 import com.mygdx.game.Sprites.Hero;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Math.sqrt;
+import static java.lang.Math.subtractExact;
 
 public class PlayScreen implements Screen, InputProcessor {
     //Vision variables
@@ -41,6 +53,7 @@ public class PlayScreen implements Screen, InputProcessor {
     private TmxMapLoader mapLoader;
     private TiledMap hexes;
     private HexagonalTiledMapRenderer renderer;
+    private MapOverlay overlay;
 
     // Width and Height from Map Properties variables
     MapProperties prop;
@@ -86,9 +99,6 @@ public class PlayScreen implements Screen, InputProcessor {
         //create a FitViewport to maintain virtual aspect ratio despite
         gamePort = new FitViewport(Axivals.V_WIDTH , Axivals.V_HEIGHT, gamecam);
 
-        //create map
-        map = new Texture("map-imgs/no-grid-map.png");
-
         //Load our map and setup our map renderer
         mapLoader = new TmxMapLoader();
         hexes = mapLoader.load("tiled-maps/map.tmx");
@@ -105,6 +115,10 @@ public class PlayScreen implements Screen, InputProcessor {
 
         //create board
         board = new Board(this);
+
+        //create map
+        map = new Texture("map-imgs/no-grid-map.png");
+        overlay = new MapOverlay(board, game.batch);
 
         //create onClick
         click = new onClick(this, board);
@@ -397,7 +411,7 @@ public class PlayScreen implements Screen, InputProcessor {
         gamecam.update();
 
         //tell our renderer to draw only what our camera can see in our game world
-        renderer.setView(gamecam);
+//        renderer.setView(gamecam);
     }
 
     @Override
@@ -442,13 +456,16 @@ public class PlayScreen implements Screen, InputProcessor {
         font.draw(game.batch, "Routing", 1000, 660);
         font.draw(game.batch, Integer.toString(player.getWalking()), 1000, 635);
 
+        //render specific tilemap
+        overlay.showOverlay(player.col, player.row, player.walk);
+
+
         game.batch.end();
 
         //render our game map
-        renderer.render();
+//        renderer.render();
 
         //render hero
-
         game.batch.begin();
         if (player.facing.compareTo(Hero.State.RIGHT) == 0) {
             game.batch.draw(player.action().getKeyFrame(player.getElapsedTime(), true),
