@@ -12,6 +12,7 @@ public class MapOverlay {
     private SpriteBatch batch;
     private Texture tile;
     private List<Vector2> area;
+    private Vector2 temp;
     public MapOverlay(Board board, SpriteBatch batch) {
         this.board = board;
         this.batch = batch;
@@ -20,7 +21,8 @@ public class MapOverlay {
 
     public void showOverlay(int col, int row, int radius) {
         area = new LinkedList<Vector2>();
-        area.addAll(board.getArea(col, row, radius));
+        area.addAll(board.getOverlay(col, row, radius));
+//        area.addAll(board.getArea(col, row, radius));
         for (Vector2 vec: area) {
             if (!board.map[(int)vec.y][(int)vec.x].isObstacle()) {
                 batch.draw(tile, board.map[(int)vec.y][(int)vec.x].corX + 8,

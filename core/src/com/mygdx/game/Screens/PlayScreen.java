@@ -456,7 +456,7 @@ public class PlayScreen implements Screen, InputProcessor {
         font.draw(game.batch, "Routing", 1000, 660);
         font.draw(game.batch, Integer.toString(player.getWalking()), 1000, 635);
 
-        //render specific tilemap
+        //render Overlay
         overlay.showOverlay(player.col, player.row, player.walk);
 
 
@@ -526,9 +526,9 @@ public class PlayScreen implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 rowcol = click.getRowCol(screenX, Math.abs(mapPixelHeight - screenY));
         List<Vector2> area = new LinkedList<Vector2>();
-        area.addAll(board.getArea(player.col, player.row, player.walk));
+        area.addAll(board.getOverlay(player.col, player.row, player.walk));
         if (!board.map[(int)rowcol.y][(int)rowcol.x].isObstacle() && walker.getRoute() == 0
-                && area.contains(rowcol)) {
+                && area.contains(rowcol) && !(rowcol.equals(new Vector2(player.col, player.row)))) {
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && walker.isRouting() == 0) {
                 walker.setRouting(1);
                 System.out.println("Mouse clicked!");

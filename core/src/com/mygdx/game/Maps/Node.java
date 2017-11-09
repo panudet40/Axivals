@@ -9,6 +9,7 @@ public class Node extends Vector2 {
     public int corY;
     public int parentX;
     public int parentY;
+    public int level;
     private int obstacle;
     private boolean visit=false;
     public Node(int row, int col, int corX, int corY, int obstacle) {
@@ -17,6 +18,7 @@ public class Node extends Vector2 {
         this.corX = corX;
         this.corY = corY;
         this.obstacle = obstacle;
+        this.level = 0;
     }
 
     public void setParent(int parentX, int parentY) {
@@ -37,6 +39,10 @@ public class Node extends Vector2 {
             return true;
         }
         return false;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public void setVisit(boolean visit) {

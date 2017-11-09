@@ -2,8 +2,11 @@ package com.mygdx.game.Maps;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.PlayScreen;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Board {
     //0 is no obstacle 1 is a obstacle 2 is a Hero
@@ -24,8 +27,9 @@ public class Board {
     };
 
     public Node[][] map;
-    private LinkedList<Vector2> list, path, area, area1, area2, ways, temp;
+    private LinkedList<Vector2> list, path, area, ways, temp;
     private Node n;
+    private PlayScreen screen;
 
     public Board(PlayScreen screen) {
         int corX=-12,corY=619;
@@ -54,7 +58,7 @@ public class Board {
         map[scrY][scrX].setVisit(true);
         temp1 = list.pop();
         while (!list.contains(new Vector2(desX, desY))) {
-            list.addAll(this.getWays((int)temp1.x, (int)temp1.y, this));
+            list.addAll(this.getWays((int)temp1.x, (int)temp1.y));
             temp1 = list.pop();
         }
         temp1 = new Vector2(desX, desY);
@@ -62,73 +66,109 @@ public class Board {
             path.addFirst(temp1);
             temp1 = map[(int)temp1.y][(int)temp1.x].getParent();
         }
+        this.resetLevel();
         this.resetVisit();
         return path;
     }
 
-    public LinkedList<Vector2> getArea(int x, int y, int n) {
+    public LinkedList<Vector2> getArea(int col, int row, int n) {
         int idx = 0;
         double start;
         double stop;
-        area1 = new LinkedList<Vector2>();
-        for (double i = y-n; i < y-n+(2*n)+1; i++) {
+        area = new LinkedList<Vector2>();
+        for (double i = row-n; i < row-n+(2*n)+1; i++) {
             if (0 <= i && i <= 12) {
-                if (y%2==1) {
-                    start = (x - n + Math.floor(Math.abs(y-i)/2));
-                    stop = start + (2*n) - Math.abs(y-i)+1;
+                if (row%2==1) {
+                    start = (col - n + Math.floor(Math.abs(row-i)/2));
+                    stop = start + (2*n) - Math.abs(row-i)+1;
                 }
                 else {
-                    start = (x - n + Math.ceil(Math.abs(y-i)/2));
-                    stop = start + (2*n)-Math.abs(y-i)+1;
+                    start = (col - n + Math.ceil(Math.abs(row-i)/2));
+                    stop = start + (2*n)-Math.abs(row-i)+1;
                 }
                 for (double j = start; j < stop; j++) {
                     if (0 <= j && j <= 23) {
                         if (!map[(int)i][(int)j].isObstacle()) {
-                            area1.add(idx, new Vector2((int)j, (int)i));
+                            area.add(idx, new Vector2((int)j, (int)i));
                             idx++;
                         }
                     }
                 }
             }
         }
-        return area1;
+        return area;
     }
 
-    public LinkedList<Vector2> getWays(int x, int y, Board board) {
-        area2 = new LinkedList<Vector2>();
+    public LinkedList<Vector2> getWays(int col, int row) {
+        area = new LinkedList<Vector2>();
         ways = new LinkedList<Vector2>();
         temp = new LinkedList<Vector2>();
-        if (y%2 == 0) {
-            temp.add(new Vector2(x+1, y)); //Right
-            temp.add(new Vector2(x+1, y+1)); //Right-Down
-            temp.add(new Vector2(x, y+1)); //Left-Down
-            temp.add(new Vector2(x-1, y)); //Left
-            temp.add(new Vector2(x, y-1)); //Left-Up
-            temp.add(new Vector2(x+1, y-1)); //Up-Right
+        if (row%2 == 0) {
+            temp.add(new Vector2(col+1, row)); //Right
+            temp.add(new Vector2(col+1, row+1)); //Right-Down
+            temp.add(new Vector2(col, row+1)); //Left-Down
+            temp.add(new Vector2(col-1, row)); //Left
+            temp.add(new Vector2(col, row-1)); //Left-Up
+            temp.add(new Vector2(col+1, row-1)); //Up-Right
         }
         else {
-            temp.add(new Vector2(x+1, y)); //Right
-            temp.add(new Vector2(x, y+1)); //Right-Down
-            temp.add(new Vector2(x-1, y+1)); //Left-Down
-            temp.add(new Vector2(x-1, y)); //Left
-            temp.add(new Vector2(x-1, y-1)); //Left-Up
-            temp.add(new Vector2(x, y-1)); //Right-Up
+            temp.add(new Vector2(col+1, row)); //Right
+            temp.add(new Vector2(col, row+1)); //Right-Down
+            temp.add(new Vector2(col-1, row+1)); //Left-Down
+            temp.add(new Vector2(col-1, row)); //Left
+            temp.add(new Vector2(col-1, row-1)); //Left-Up
+            temp.add(new Vector2(col, row-1)); //Right-Up
         }
-        area2.addAll(this.getArea(x, y, 1));
-        temp.retainAll(area2);
+        area.addAll(this.getArea(col, row, 1));
+        temp.retainAll(area);
         for (Vector2 node: temp) {
-            if (!board.map[(int)node.y][(int)node.x].isVisit()) {
+            if (!map[(int)node.y][(int)node.x].isVisit()) {
                 ways.add(node);
-                board.map[(int)node.y][(int)node.x].setVisit(true);
-                board.map[(int)node.y][(int)node.x].setParent(x, y);
+                map[(int)node.y][(int)node.x].setLevel(map[row][col].level+1);
+                map[(int)node.y][(int)node.x].setVisit(true);
+                map[(int)node.y][(int)node.x].setParent(col, row);
             }
         }
         return  ways;
     }
 
+    public Set<Vector2> getOverlay(int col, int row, int walk) {
+        int check = 0;
+        Vector2 temp1;
+        Set<Vector2> area = new HashSet<Vector2>();
+        list = new LinkedList<Vector2>();
+        list.add(new Vector2(col, row));
+        map[row][col].setVisit(true);
+        temp1 = list.pop();
+        while (check == 0) {
+            list.addAll(this.getWays((int)temp1.x, (int)temp1.y));
+            for (Vector2 vec: list) {
+                if (0 < map[(int)vec.y][(int)vec.x].level && map[(int)vec.y][(int)vec.x].level <= walk) {
+                    area.add(vec);
+                    check = 0;
+                }
+                else if (map[(int)vec.y][(int)vec.x].level > walk) {
+                    check = 1;
+                }
+            }
+            temp1 = list.pop();
+        }
+        this.resetLevel();
+        this.resetVisit();
+        return area;
+    }
+
     public void setObstacle(int x, int y, int n) {
         if (0 <= x && x <= 23 && 0 <= y && y <= 12 && !this.map[x][y].isObstacle()) {
             this.map[x][y].setObstacle(n);
+        }
+    }
+
+    public void resetLevel() {
+        for (int row=0; row < 13; row++) {
+            for (int col=0; col < 24; col++) {
+                map[row][col].setLevel(0);
+            }
         }
     }
 
