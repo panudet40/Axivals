@@ -9,31 +9,37 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.Maps.Board;
 import com.mygdx.game.Screens.PlayScreen;
 
-public class Hero extends TextureAtlas {
+public class Hero {
 
     public enum State {STANDING, WALKING, ATTACKING1, ATTACKING2, ALERT, HIT, DEAD, LEFT, RIGHT};
     public String action;
     public State facing;
     public State currentState;
     public State previousState;
-    public int walk=3;
+    public int walk=8;
+    public int col;
+    public int row;
     private Texture img;
     private TextureAtlas atlas;
     private Animation<TextureRegion> animation;
     private Vector2 coordinates, des;
-    public int col;
-    public int row;
+    private PlayScreen screen;
+    private Board board;
     private float frameDuration;
     private float elapsedTime = 1f;
     private static int walking=0;
-
-    public Hero(PlayScreen screen, int row, int col) {
-        this.col = col;
-        this.row = row;
-        des = new Vector2(screen.board.map[row][col].corX, screen.board.map[row][col].corY);
-        coordinates = new Vector2();
+    public Hero(PlayScreen screen, Board board, Vector2 vector) {
+        this.screen = screen;
+        this.board = board;
+        this.row = (int) vector.y;
+        this.col = (int) vector.x;
+        this.des = new Vector2();
+        this.coordinates = new Vector2();
+        this.coordinates.set(board.map[row][col].corX , board.map[row][col].corY);
+        this.des.set(screen.board.map[row][col].corX, screen.board.map[row][col].corY);
         facing = State.RIGHT;
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -52,12 +58,15 @@ public class Hero extends TextureAtlas {
     }
 
     public void setWalking(int n) { this.walking = n; }
-
     public int getWalking() { return walking; }
 
     public void setCoordinates(float x, float y) {
         this.coordinates = coordinates.set(x, y);
     }
+    public Vector2 getCoordinates() {
+        return this.coordinates;
+    }
+
     public void setRowCol(int row, int col) {
         this.row = row;
         this.col = col;
@@ -65,12 +74,9 @@ public class Hero extends TextureAtlas {
     public Vector2 getRowCol() {
         return new Vector2(this.col, this.row);
     }
+
     public void setDes(float x, float y) {
         this.des.set(x, y);
-    }
-
-    public Vector2 getCoordinates() {
-        return this.coordinates;
     }
     public Vector2 getDes() { return  this.des; }
 

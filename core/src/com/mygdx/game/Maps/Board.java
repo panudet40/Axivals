@@ -3,10 +3,7 @@ package com.mygdx.game.Maps;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.PlayScreen;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Board {
     //0 is no obstacle 1 is a obstacle 2 is a Hero
@@ -27,7 +24,7 @@ public class Board {
     };
 
     public Node[][] map;
-    private LinkedList<Vector2> list, path, area, ways, temp;
+    private LinkedList<Vector2> list, path, area, ways, temp, HeroCoordinates;
     private Node n;
     private PlayScreen screen;
 
@@ -43,6 +40,11 @@ public class Board {
                 map[y][x] = new Node(x, y, corX, corY, detail[y][x]);
             }
         }
+        HeroCoordinates = new LinkedList<Vector2>();
+        HeroCoordinates.add(new Vector2(0,0));
+        HeroCoordinates.add(new Vector2(23,0));
+        HeroCoordinates.add(new Vector2(0,12));
+        HeroCoordinates.add(new Vector2(23,12));
     }
 
     public List<Vector2> getPath(Vector2 source, Vector2 destination) {
@@ -57,7 +59,7 @@ public class Board {
         list.add(new Vector2(scrX, scrY));
         map[scrY][scrX].setVisit(true);
         temp1 = list.pop();
-        while (!list.contains(new Vector2(desX, desY))) {
+        while (!list.contains(new Vector2(desX, desY)) && !temp1.equals(new Vector2(desX, desY))) {
             list.addAll(this.getWays((int)temp1.x, (int)temp1.y));
             temp1 = list.pop();
         }
@@ -178,5 +180,9 @@ public class Board {
                 map[row][col].setVisit(false);
             }
         }
+    }
+
+    public Vector2 getHeroCoordinates() {
+        return HeroCoordinates.pop();
     }
 }

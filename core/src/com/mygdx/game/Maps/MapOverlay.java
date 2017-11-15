@@ -22,7 +22,6 @@ public class MapOverlay {
     public void showOverlay(int col, int row, int radius) {
         area = new LinkedList<Vector2>();
         area.addAll(board.getOverlay(col, row, radius));
-//        area.addAll(board.getArea(col, row, radius));
         for (Vector2 vec: area) {
             if (!board.map[(int)vec.y][(int)vec.x].isObstacle()) {
                 batch.draw(tile, board.map[(int)vec.y][(int)vec.x].corX + 8,
